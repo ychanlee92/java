@@ -19,11 +19,12 @@ public class Stu_ManMain {
 		System.out.println("★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆");
 		System.out.println("");
 		System.out.println("");
-		System.out.println("                   Welcome to Javflix!");
+		System.out.println("                   Welcome to KH352 자바 프로그램!!");
 		System.out.println("");
 		System.out.println("");
 		System.out.println("★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆");
-
+		Connection con = SQLStu_ManConnect.makeConnection();;
+		
 		boolean flag = false;
 		Student student = new Student();
 		while (!flag) {
