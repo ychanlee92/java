@@ -23,12 +23,8 @@ public class Stu_ManMain {
 		System.out.println("");
 		System.out.println("");
 		System.out.println("★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆");
-<<<<<<< HEAD
-		Connection con = SQLStu_ManConnect.makeConnection();;
 		
-=======
 		boolean loginFlag = false;
->>>>>>> 94e0ba5e8c6a7772403464deea8e21acf27b8a3e
 		boolean flag = false;
 		Student student = new Student();
 		while (!loginFlag) {
