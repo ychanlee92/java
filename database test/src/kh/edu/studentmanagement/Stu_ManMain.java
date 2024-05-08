@@ -23,47 +23,60 @@ public class Stu_ManMain {
 		System.out.println("");
 		System.out.println("");
 		System.out.println("★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆");
+<<<<<<< HEAD
 		Connection con = SQLStu_ManConnect.makeConnection();;
 		
+=======
+		boolean loginFlag = false;
+>>>>>>> 94e0ba5e8c6a7772403464deea8e21acf27b8a3e
 		boolean flag = false;
 		Student student = new Student();
-		while (!flag) {
-			String menu = menu();
-			switch (menu) {
-			case "1":
-				// 전체 학생 조회
-				selectAllStudent();
-				break;
-			case "2":
-				// 신규 학생 등록
-				student = inputNewStudent();
-				insertStudent(student);
-				break;
-			case "3":
-				// 학생 정보 조회
-				searchStudent();
-				break;
-			case "4":
-				// 학생 정보 수정
-				updateStudent();
-				break;
-			case "5":
-				// 학생 정보 삭제
-				deleteStudent();
-				break;
-			case "6":
-				// 종료
-				System.out.println("the end");
-				flag = true;
-				break;
-			default:
-				System.out.println("잘못 입력했습니다. ");
-				break;
+		while (!loginFlag) {
+			// 로그인
+			Connection login = SQLStu_ManConnect.loginConnection();
+			if (login != null) {
+				while (!flag) {
+					// 메뉴
+					String menu = menu();
+					switch (menu) {
+					case "1":
+						// 전체 학생 조회
+						selectAllStudent();
+						break;
+					case "2":
+						// 신규 학생 등록
+						student = inputNewStudent();
+						insertStudent(student);
+						break;
+					case "3":
+						// 학생 정보 조회
+						searchStudent();
+						break;
+					case "4":
+						// 학생 정보 수정
+						updateStudent();
+						break;
+					case "5":
+						// 학생 정보 삭제
+						deleteStudent();
+						break;
+					case "6":
+						// 종료
+						System.out.println("the end");
+						flag = true;
+						loginFlag = true;
+						break;
+					default:
+						System.out.println("잘못 입력했습니다. ");
+						break;
+					}
+				}
 			}
 		}
 	}
 
-	private static void deleteStudent() throws FileNotFoundException, IOException {
+	// 학생 정보 삭제하기
+	public static void deleteStudent() throws FileNotFoundException, IOException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -94,8 +107,8 @@ public class Stu_ManMain {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, number);
 			int i = pstmt.executeUpdate();
-			if(i == 1) {
-				System.out.println("삭제되었습니다.");				
+			if (i == 1) {
+				System.out.println("삭제되었습니다.");
 			} else {
 				System.out.println("삭제 실패했습니다.");
 			}
@@ -118,6 +131,7 @@ public class Stu_ManMain {
 		}
 	}
 
+	// 학생 정보 수정하기
 	private static void updateStudent() throws ParseException, FileNotFoundException, IOException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -170,7 +184,7 @@ public class Stu_ManMain {
 			Timestamp stu_date = new Timestamp(stringToDate.getTime());
 			student = new Student(0, stu_num, stu_name, stu_id, stu_pw, stu_bd, stu_phone, stu_addr, stu_email,
 					stu_date);
-			sql = "update stu_man set stu_num = ?, stu_name = ?, stu_id = ?, stu_pw = ?, stu_bd = ?, stu_phone = ?, stu_addr = ?, stu_email = ?, stu_date = null where num = ?";
+			sql = "update stu_man set stu_num = ?, stu_name = ?, stu_id = ?, stu_pw = ?, stu_bd = ?, stu_phone = ?, stu_addr = ?, stu_email = ?, stu_date = to_date(?) where num = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, student.getStu_num());
 			pstmt.setString(2, student.getStu_name());
@@ -180,7 +194,8 @@ public class Stu_ManMain {
 			pstmt.setString(6, student.getStu_phone());
 			pstmt.setString(7, student.getStu_addr());
 			pstmt.setString(8, student.getStu_email());
-			pstmt.setInt(9, number);
+			pstmt.setString(9, date);
+			pstmt.setInt(10, number);
 			int i = pstmt.executeUpdate();
 			if (i == 1) {
 				System.out.println(student.getStu_name() + "정보가 수정되었습니다.");
@@ -206,6 +221,7 @@ public class Stu_ManMain {
 		}
 	}
 
+	// 학생 정보 조회
 	public static void searchStudent() {
 		System.out.print("검색할 학생 이름을 입력하세요: ");
 		String name = sc.nextLine();
@@ -258,12 +274,15 @@ public class Stu_ManMain {
 		}
 	}
 
+	// 학생 정보 데이터베이스에 입력
 	public static void insertStudent(Student student) throws FileNotFoundException, IOException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
+			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd");
+			String str = sdFormat.format(student.getStu_date());
 			con = SQLStu_ManConnect.makeConnection();
-			String sql = "insert into stu_man values (num_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, null)";
+			String sql = "insert into stu_man values (num_seq.nextval, ?, ?, ?, ?, ?, ?, ?, ?, to_date(?))";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, student.getStu_num());
 			pstmt.setString(2, student.getStu_name());
@@ -273,6 +292,7 @@ public class Stu_ManMain {
 			pstmt.setString(6, student.getStu_phone());
 			pstmt.setString(7, student.getStu_addr());
 			pstmt.setString(8, student.getStu_email());
+			pstmt.setString(9, str);
 			int i = pstmt.executeUpdate();
 			if (i == 1) {
 				System.out.println(student.getStu_name() + "정보가 입력되었습니다.");
@@ -295,6 +315,7 @@ public class Stu_ManMain {
 		}
 	}
 
+	// 학생 정보 입력
 	private static Student inputNewStudent() throws ParseException {
 		System.out.print("학번을 입력하세요: ");
 		String stu_num = sc.nextLine();
